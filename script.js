@@ -1,28 +1,14 @@
 async function askAI() {
-    const input = document.getElementById("userInput").value;
-    const resBox = document.getElementById("responseBox");
+    const text = document.getElementById("input").value;
+    document.getElementById("result").innerHTML = "Loading...";
 
-    if (!input) {
-        resBox.innerHTML = "<p>Please enter a question.</p>";
-        return;
-    }
-
-    resBox.innerHTML = "<p>Loading...</p>";
-
-    // --- API Request ---
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://arya-ai-backend.vercel.app/api/chat", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "01d7613197d677acec0bd3ebaa9509fc"
-        },
-        body: JSON.stringify({
-            model: "gpt-4o-mini",
-            messages: [{ role: "user", content: input }]
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: text })
     });
 
-    const data = await response.json();
-
-    resBox.innerHTML = "<p>" + data.choices[0].message.content + "</p>";
+    const data = await res.json();
+    document.getElementById("result").innerHTML =
+        data.choices?.[0]?.message?.content || "No response";
 }
